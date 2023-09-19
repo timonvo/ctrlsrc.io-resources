@@ -1,0 +1,32 @@
+# Options to use when building for ESP32-C6.
+[target.riscv32imac-unknown-none-elf]
+runner = "espflash flash --baud=921600 --monitor"
+rustflags = ["-Clink-arg=-Tlinkall.x"]
+
+# Options to use when building for ESP32-C3.
+[target.riscv32imc-unknown-none-elf]
+runner = "espflash flash --baud=921600 --monitor"
+rustflags = [
+  "-Clink-arg=-Tlinkall.x",
+  # enable the atomic codegen option for RISCV
+  "-Ctarget-feature=+a",
+  # tell the core library have atomics even though it's not specified in the target definition
+  "--cfg=target_has_atomic_load_store",
+  '--cfg=target_has_atomic_load_store="16"',
+  '--cfg=target_has_atomic_load_store="32"',
+  '--cfg=target_has_atomic_load_store="8"',
+  '--cfg=target_has_atomic_load_store="ptr"',
+  # enable cas
+  "--cfg=target_has_atomic",
+  '--cfg=target_has_atomic="16"',
+  '--cfg=target_has_atomic="32"',
+  '--cfg=target_has_atomic="8"',
+  '--cfg=target_has_atomic="ptr"',
+]
+
+# Needed for ESP32-C3, to build the core library with atomics emulation support.
+[unstable]
+build-std = ["core"]
+
+[env]
+ESP_LOGLEVEL = "info"

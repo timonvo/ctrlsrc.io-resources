@@ -1,0 +1,8 @@
+  {
+    // Tell VSCode to assume the esp32c6 feature is enabled when analyzing code.
+    "rust-analyzer.cargo.features": [
+      "esp32c6"
+    ],
+    // And to use the target for the ESP32-C6 chip.
+    "rust-analyzer.cargo.target": "riscv32imac-unknown-none-elf",
+  }

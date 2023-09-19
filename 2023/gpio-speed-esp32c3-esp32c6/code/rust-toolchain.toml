@@ -1,0 +1,7 @@
+[toolchain]
+# Needed for esp-hal.
+channel = "nightly"
+# Needed to the ESP32-C3 chip to enable atomics emulation.
+components = ["rust-src"]
+# Needed for esp-hal targeting ESP32-C6 and ESP32-C3 chips, respectively.
+targets = ["riscv32imac-unknown-none-elf", "riscv32imc-unknown-none-elf"]
