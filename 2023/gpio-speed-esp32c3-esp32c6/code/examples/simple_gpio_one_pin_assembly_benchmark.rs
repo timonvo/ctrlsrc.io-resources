@@ -68,16 +68,17 @@ fn benchmark_simple_gpio_one_pin_with_assembly(mut io: IO) -> ! {
     // Toggle the pin's state in a busy loop.
     unsafe {
         asm!("
-        // Ensures that the '1' label corresponds to a 2-byte aligned address,
-        // thereby allowing the `j` instruction to take only a single CPU cycle.
-        .align 2
-        1:
-        // Set the pin high.
-        sw {gpio_pin}, 0x8({gpio_matrix}) // 0x8 is the GPIO_OUT_W1TS_REG offset.
-        // Set the pin low.
-        sw {gpio_pin}, 0xc({gpio_matrix}) // 0xc is the GPIO_OUT_W1TC_REG offset.
-        // Loop back to label 1.
-        j 1b",
+            // Ensures that the '1' label corresponds to a 2-byte aligned address,
+            // thereby allowing the `j` instruction to take only a single CPU cycle on ESP32-C6
+            // chips.
+            .align 2
+            1:
+            // Set the pin high.
+            sw {gpio_pin}, 0x8({gpio_matrix}) // 0x8 is the GPIO_OUT_W1TS_REG offset.
+            // Set the pin low.
+            sw {gpio_pin}, 0xc({gpio_matrix}) // 0xc is the GPIO_OUT_W1TC_REG offset.
+            // Loop back to label 1.
+            j 1b",
             // GPIO10 corresponds to bit 11 in the GPIO_OUT_W1TS_REG and
             // GPIO_OUT_W1TC_REG registers.
             gpio_pin = in(reg) 1 << 10,

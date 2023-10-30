@@ -103,7 +103,8 @@ fn benchmark_dedicated_io(io: IO) -> ! {
             .endm
 
             // Ensures that the '1' label corresponds to a 2-byte aligned address,
-            // thereby allowing the `j` instruction to take only a single CPU cycle.
+            // thereby allowing the `j` instruction to take only a single CPU cycle on ESP32-C6
+            // chips.
             .align 2
             1:
             // Toggle the pin 8 times, and then loop back. This manual unrolling of the loop
