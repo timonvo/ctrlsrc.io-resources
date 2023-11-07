@@ -102,10 +102,10 @@ fn benchmark_dedicated_io(io: IO) -> ! {
             csrrci zero, {csr_cpu_gpio_out}, {cpu_gpio_signal}
             .endm
 
-            // Ensures that the '1' label corresponds to a 2-byte aligned address,
+            // Ensures that the '1' label corresponds to a 4 byte-aligned address,
             // thereby allowing the `j` instruction to take only a single CPU cycle on ESP32-C6
             // chips.
-            .align 2
+            .align 4
             1:
             // Toggle the pin 8 times, and then loop back. This manual unrolling of the loop
             // ensures we can gauge the absolute maximum achievable speed, even if we can only

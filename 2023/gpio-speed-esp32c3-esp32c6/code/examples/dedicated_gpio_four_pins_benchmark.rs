@@ -107,10 +107,9 @@ fn benchmark_dedicated_io(io: IO) -> ! {
     unsafe {
         asm!(
             "
-            // Ensures that the '1' label corresponds to a 2-byte aligned address,
-            // thereby allowing the `j` instruction to take only a single CPU cycle on ESP32-C6
-            // chips.
-            .align 2
+            // Ensures that the '1' label corresponds to a 4 byte-aligned address, thereby allowing
+            // the `j` instruction to take only a single CPU cycle on ESP32-C6 chips.
+            .align 4
             1:
             // Set pins A & B high and pins C & D low.
             csrrwi zero, {csr_cpu_gpio_out}, {ab_high_cd_low}

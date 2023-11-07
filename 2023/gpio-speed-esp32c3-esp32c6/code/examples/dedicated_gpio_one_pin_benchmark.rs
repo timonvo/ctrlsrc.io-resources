@@ -26,13 +26,13 @@ const CSR_CPU_GPIO_OUT: u32 = 0x805;
 /// oscilloscope. This is because the jump instruction takes up one CPU cycle, with the actual
 /// toggling taking up the two other CPU cycles in the loop.
 ///
-/// Note that the '.align 2' statement below is crucial to achieving this three-CPU cycle loop.
+/// Note that the '.align 4' statement below is crucial to achieving this three-CPU cycle loop.
 /// Without it the `j` instruction can take up to two CPU cycles if the target address is
 /// misaligned, resulting in a frequency of only 40MHz and a duty cycle of 25%.
 ///
 /// On my ESP32-C3 this achieves a signal frequency of about 40MHz and a duty cycle of 25%,
 /// seemingly indicating that on the ESP32-C3 the jump takes two CPU cycles even when the target is
-/// 2-byte aligned. If I ensure the target is *not* 2-byte aligned, then the signal frequency is
+/// 4 byte-aligned. If I ensure the target is *not* 4 byte-aligned, then the signal frequency is
 /// 32MHz, which seems to indicate that unaligned jumps on ESP32-C3 thus take three cycles (one more
 /// than aligned jumps).
 ///
@@ -95,10 +95,10 @@ fn benchmark_dedicated_io(io: IO) -> ! {
     // Toggle the pin in a busy loop.
     unsafe {
         asm!("
-            // Ensures that the '1' label corresponds to a 2-byte aligned address,
+            // Ensures that the '1' label corresponds to a 4 byte-aligned address,
             // thereby allowing the `j` instruction to take only a single CPU cycle on ESP32-C6
             // chips.
-            .align 2
+            .align 4
             1:
             // Set the pin high.
             csrrsi zero, {csr_cpu_gpio_out}, {cpu_gpio_signal}
